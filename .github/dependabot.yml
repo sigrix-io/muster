@@ -1,0 +1,35 @@
+# Keeps the two things this repository pins from ageing quietly: the tools in
+# requirements-dev.txt, and the commits every workflow's `uses:` names. A pin
+# only stays correct if something bumps it. A bump that breaks anything arrives
+# as a red check on a pull request nobody has merged.
+#
+# Dependabot reads the `# vX.Y.Z` comment beside each SHA to know what it is
+# bumping from, so a pin written without one goes stale;
+# `tests/test_workflow_pins.py` fails if either half slips.
+#
+# One pull request per ecosystem, not one per dependency: each merge puts every
+# other open update behind main, and a group costs one round of rebasing rather
+# than one per bump. The price is that a bump which breaks something holds back
+# the rest of its group until it is fixed, or excluded with
+# `@dependabot ignore <dependency>`.
+#
+# Deliberately no auto-merge.
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

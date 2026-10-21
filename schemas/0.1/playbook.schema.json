@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sigrix.io/schemas/muster/0.1/playbook.schema.json",
+  "title": "Playbook document (playbook.json), Muster format 0.1",
+  "description": "What a playbook's files are and how they fit: a process a business runs by hand, sold as the files a person works through (the steps, the copy, the checklists and the offline tools). The document sits at the top of the playbook's folder, beside every file it names. This schema is a reader's view of 0.1: a reader ignores a member it does not know and refuses a major version it does not know, so a 0.x document validates whatever minor it is. Some rules are about the files rather than the document, and no JSON Schema can state them; the format's README lists them: every file named is in the folder and nothing else is, order names every file exactly once, same_as names another file of the same role that is not itself the same as another, paths are compared ignoring case, a placeholder is declared once, every placeholder the files use is declared and every declared one is used, and an .html file loads nothing from the network (one that runs scripts carries a Content-Security-Policy in its head, before any script, that blocks every request).",
+  "type": "object",
+  "required": [
+    "format_version",
+    "name",
+    "title",
+    "order",
+    "files",
+    "slots",
+    "examples_are_fictional"
+  ],
+  "properties": {
+    "format_version": {
+      "type": "string",
+      "pattern": "^0\\.[0-9]+$",
+      "description": "The format this document is written in, as MAJOR.MINOR. A minor version only adds members a 0.1 reader can ignore; a reader refuses a major it does not know."
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 80,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "The playbook's name: lowercase letters, digits and single hyphens, such as moving-quote-follow-up."
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200,
+      "pattern": "\\S",
+      "not": {
+        "pattern": "\\n"
+      },
+      "description": "The name a person sees, on one line."
+    },
+    "order": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "description": "Every file's path, once each, in the order a person works through them."
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/file"
+      },
+      "description": "Each file in the playbook, with what it is for."
+    },
+    "slots": {
+      "type": "object",
+      "required": [
+        "setup",
+        "message"
+      ],
+      "properties": {
+        "setup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slot"
+          },
+          "description": "Placeholders the buyer fills in once, for their business."
+        },
+        "message": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slot"
+          },
+          "description": "Placeholders the buyer fills in each time they use the playbook."
+        }
+      },
+      "description": "The placeholders the files use, by when the buyer fills them in. Either list may be empty."
+    },
+    "examples_are_fictional": {
+      "type": "boolean",
+      "description": "Whether every name, number and address in the files' examples is made up. A store may list real examples on conditions of its own."
+    }
+  },
+  "$defs": {
+    "path": {
+      "type": "string",
+      "maxLength": 200,
+      "pattern": "^(?:[A-Za-z0-9_][A-Za-z0-9 ._()+-]*/)*[A-Za-z0-9_][A-Za-z0-9 ._()+-]*\\.(?:[mM][dD]|[tT][xX][tT]|[cC][sS][vV]|[hH][tT][mM][lL])$",
+      "not": {
+        "pattern": "\\n"
+      },
+      "description": "A file's path relative to the playbook's folder, with / between folders: each part starts with a letter, a digit or _, and the file is .md, .txt, .csv or .html."
+    },
+    "file": {
+      "type": "object",
+      "required": [
+        "path",
+        "role"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "role": {
+          "enum": [
+            "guide",
+            "steps",
+            "checklist",
+            "copy",
+            "reference",
+            "tool",
+            "license",
+            "changelog"
+          ],
+          "description": "What the file is for."
+        },
+        "same_as": {
+          "$ref": "#/$defs/path",
+          "description": "Another file in files whose content this one presents in another form, such as a checklist.html beside CHECKLIST.md. It takes that file's role."
+        },
+        "self_contained": {
+          "type": "boolean",
+          "description": "An .html file's promise that it loads nothing from the network. Every .html file makes it, and no other file carries it."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "path"
+            ],
+            "properties": {
+              "path": {
+                "pattern": "\\.[hH][tT][mM][lL]$"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "self_contained"
+            ],
+            "properties": {
+              "self_contained": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "path"
+            ],
+            "properties": {
+              "path": {
+                "not": {
+                  "pattern": "\\.[hH][tT][mM][lL]$"
+                }
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "self_contained"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "slot": {
+      "type": "object",
+      "required": [
+        "placeholder",
+        "label"
+      ],
+      "properties": {
+        "placeholder": {
+          "type": "string",
+          "pattern": "^\\[[A-Za-z][A-Za-z0-9 _-]{0,39}\\]$",
+          "description": "The token as the files write it, in square brackets. Case is part of it: [PHONE] and [phone] are two placeholders."
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 120,
+          "pattern": "\\S",
+          "not": {
+            "pattern": "\\n"
+          },
+          "description": "What the placeholder stands for, on one line."
+        }
+      }
+    }
+  }
+}

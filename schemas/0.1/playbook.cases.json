@@ -1,0 +1,485 @@
+{
+  "$comment": [
+    "Muster 0.1's case table: valid playbook.json documents, and invalid ones each made by one RFC 6902 change",
+    "to a valid one, so each fails for that change and nothing else. Every implementation runs it: this",
+    "repository against the schema beside it, and a reader with a checker of its own against that checker too,",
+    "so the two cannot disagree about what the format allows. Rules about the files rather than the document",
+    "(every file named is present, order names every file once, placeholders are declared and used, an .html",
+    "file loads nothing) are not JSON Schema's to state; the README lists them."
+  ],
+  "schema": "https://sigrix.io/schemas/muster/0.1/playbook.schema.json",
+  "valid": [
+    {
+      "name": "a moving company's quote follow-ups",
+      "document": {
+        "format_version": "0.1",
+        "name": "moving-quote-follow-up",
+        "title": "Moving Quote Follow-Up",
+        "order": [
+          "README.md",
+          "CHECKLIST.md",
+          "checklist.html",
+          "follow-up-steps.md",
+          "reply-templates.md",
+          "pricing-notes.md",
+          "LICENSE.txt",
+          "CHANGELOG.md"
+        ],
+        "files": [
+          {
+            "path": "README.md",
+            "role": "guide"
+          },
+          {
+            "path": "CHECKLIST.md",
+            "role": "checklist"
+          },
+          {
+            "path": "checklist.html",
+            "role": "checklist",
+            "same_as": "CHECKLIST.md",
+            "self_contained": true
+          },
+          {
+            "path": "follow-up-steps.md",
+            "role": "steps"
+          },
+          {
+            "path": "reply-templates.md",
+            "role": "copy"
+          },
+          {
+            "path": "pricing-notes.md",
+            "role": "reference"
+          },
+          {
+            "path": "LICENSE.txt",
+            "role": "license"
+          },
+          {
+            "path": "CHANGELOG.md",
+            "role": "changelog"
+          }
+        ],
+        "slots": {
+          "setup": [
+            {
+              "placeholder": "[BUSINESS NAME]",
+              "label": "Your business's name, as customers know it"
+            },
+            {
+              "placeholder": "[PHONE]",
+              "label": "The number customers call you on"
+            },
+            {
+              "placeholder": "[CITY]",
+              "label": "The city you work from"
+            },
+            {
+              "placeholder": "[WEBSITE]",
+              "label": "Your website's address"
+            }
+          ],
+          "message": [
+            {
+              "placeholder": "[name]",
+              "label": "The customer's first name"
+            },
+            {
+              "placeholder": "[phone]",
+              "label": "The number the customer left"
+            },
+            {
+              "placeholder": "[from]",
+              "label": "Where the move starts"
+            },
+            {
+              "placeholder": "[to]",
+              "label": "Where the move ends"
+            },
+            {
+              "placeholder": "[date]",
+              "label": "The day they want to move"
+            },
+            {
+              "placeholder": "[crew]",
+              "label": "The crew lead's first name"
+            }
+          ]
+        },
+        "examples_are_fictional": true
+      }
+    },
+    {
+      "name": "the least a playbook may say",
+      "document": {
+        "format_version": "0.1",
+        "name": "one-page-checklist",
+        "title": "One-Page Checklist",
+        "order": [
+          "README.md"
+        ],
+        "files": [
+          {
+            "path": "README.md",
+            "role": "guide"
+          }
+        ],
+        "slots": {
+          "setup": [],
+          "message": []
+        },
+        "examples_are_fictional": true
+      }
+    },
+    {
+      "name": "a later minor's document, with members 0.1 does not know",
+      "document": {
+        "format_version": "0.2",
+        "name": "one-page-checklist",
+        "title": "One-Page Checklist",
+        "order": [
+          "README.md"
+        ],
+        "files": [
+          {
+            "path": "README.md",
+            "role": "guide",
+            "owner": "front desk"
+          }
+        ],
+        "slots": {
+          "setup": [],
+          "message": []
+        },
+        "examples_are_fictional": true,
+        "fill": {
+          "from": "the buyer's details"
+        }
+      }
+    },
+    {
+      "name": "examples that are real",
+      "document": {
+        "format_version": "0.1",
+        "name": "case-studies",
+        "title": "Case Studies",
+        "order": [
+          "README.md"
+        ],
+        "files": [
+          {
+            "path": "README.md",
+            "role": "guide"
+          }
+        ],
+        "slots": {
+          "setup": [],
+          "message": []
+        },
+        "examples_are_fictional": false
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "a major version this reader does not know",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/format_version",
+        "value": "1.0"
+      }
+    },
+    {
+      "name": "a version written as a number",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/format_version",
+        "value": 0.1
+      }
+    },
+    {
+      "name": "no format version",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/format_version"
+      }
+    },
+    {
+      "name": "a name with capitals and a space",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/name",
+        "value": "One Page"
+      }
+    },
+    {
+      "name": "a name past 80 characters",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/name",
+        "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "no name",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/name"
+      }
+    },
+    {
+      "name": "no title",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/title"
+      }
+    },
+    {
+      "name": "a blank title",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/title",
+        "value": "   "
+      }
+    },
+    {
+      "name": "a title on two lines",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/title",
+        "value": "One page\nchecklist"
+      }
+    },
+    {
+      "name": "no files",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/files",
+        "value": []
+      }
+    },
+    {
+      "name": "the list of files left out",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/files"
+      }
+    },
+    {
+      "name": "a file with no path",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/files/0/path"
+      }
+    },
+    {
+      "name": "a file with no role",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/files/0/role"
+      }
+    },
+    {
+      "name": "a role the format does not name",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/files/0/role",
+        "value": "templates"
+      }
+    },
+    {
+      "name": "a path that climbs out of the folder",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/files/0/path",
+        "value": "../README.md"
+      }
+    },
+    {
+      "name": "a path from the root",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/files/0/path",
+        "value": "/README.md"
+      }
+    },
+    {
+      "name": "a path with a backslash",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/files/0/path",
+        "value": "docs\\README.md"
+      }
+    },
+    {
+      "name": "a file type 0.1 does not carry",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/files/0/path",
+        "value": "logo.png"
+      }
+    },
+    {
+      "name": "an .html file that makes no promise",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "remove",
+        "path": "/files/2/self_contained"
+      }
+    },
+    {
+      "name": "an .html file that says it loads from the network",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "replace",
+        "path": "/files/2/self_contained",
+        "value": false
+      }
+    },
+    {
+      "name": "the promise on a file that is not .html",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "add",
+        "path": "/files/0/self_contained",
+        "value": true
+      }
+    },
+    {
+      "name": "order naming a file twice",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "add",
+        "path": "/order/1",
+        "value": "README.md"
+      }
+    },
+    {
+      "name": "order written as one path",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/order",
+        "value": "README.md"
+      }
+    },
+    {
+      "name": "no order",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/order"
+      }
+    },
+    {
+      "name": "no slots",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/slots"
+      }
+    },
+    {
+      "name": "slots with no message list",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/slots/message"
+      }
+    },
+    {
+      "name": "slots with no setup list",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/slots/setup"
+      }
+    },
+    {
+      "name": "a placeholder without its brackets",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "replace",
+        "path": "/slots/setup/0/placeholder",
+        "value": "BUSINESS NAME"
+      }
+    },
+    {
+      "name": "a placeholder that starts with a digit",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "replace",
+        "path": "/slots/setup/0/placeholder",
+        "value": "[1ST LINE]"
+      }
+    },
+    {
+      "name": "a placeholder with no token",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "remove",
+        "path": "/slots/setup/0/placeholder"
+      }
+    },
+    {
+      "name": "a placeholder with no label",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "remove",
+        "path": "/slots/setup/0/label"
+      }
+    },
+    {
+      "name": "a message placeholder with no token",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "remove",
+        "path": "/slots/message/0/placeholder"
+      }
+    },
+    {
+      "name": "a message placeholder with no label",
+      "base": "a moving company's quote follow-ups",
+      "change": {
+        "op": "remove",
+        "path": "/slots/message/0/label"
+      }
+    },
+    {
+      "name": "no word on the examples",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "remove",
+        "path": "/examples_are_fictional"
+      }
+    },
+    {
+      "name": "the examples answered in words",
+      "base": "the least a playbook may say",
+      "change": {
+        "op": "replace",
+        "path": "/examples_are_fictional",
+        "value": "yes"
+      }
+    }
+  ]
+}
