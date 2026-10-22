@@ -1,0 +1,6 @@
+# The tools CI runs, pinned, so a run today and a run in a month check the same
+# way. Dependabot bumps them (.github/dependabot.yml), and a bump that breaks a
+# check arrives as a red pull request rather than a red main.
+jsonschema==4.26.0
+pytest==9.1.1
+ruff==0.17.1
