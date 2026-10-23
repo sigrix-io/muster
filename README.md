@@ -205,6 +205,17 @@ checker of its own runs the same table against that checker, so the two cannot q
 about what the format allows; Sigrix's does. A change to the schema comes with the cases that
 show it.
 
+## Where it fits
+
+Muster is one of the open-source projects [Sigrix](https://sigrix.io) publishes. Its neighbours:
+
+- **[Sigrix](https://sigrix.io)**, which checks every playbook uploaded to it against Muster, with a checker of its own
+  held to the case table above, and serves the schema at its address.
+- **[Gatehouse](https://github.com/sigrix-io/gatehouse)**, the browser client whose playbook block draws what a playbook
+  holds, its files in order and the placeholders a buyer fills in, from its `playbook.json`.
+
+Every project Sigrix publishes, and a map of how they connect: [sigrix.io/open-source](https://sigrix.io/open-source).
+
 ## Working on it
 
 ```bash
