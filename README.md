@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-on-dark.svg">
+    <img src=".github/assets/logo.svg" alt="Muster" width="120">
+  </picture>
+</p>
+
 # Muster
 
 A format for playbooks. A playbook is a process a business runs by hand, sold as the files a
