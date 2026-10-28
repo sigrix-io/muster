@@ -3,4 +3,4 @@
 # check arrives as a red pull request rather than a red main.
 jsonschema==4.26.0
 pytest==9.1.1
-ruff==0.17.1
+ruff==0.17.2
